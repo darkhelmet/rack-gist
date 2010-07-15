@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rake'
+require 'bundler'
 
 begin
   require 'jeweler'
@@ -10,8 +11,7 @@ begin
     gem.email = 'darkhelmet@darkhelmetlive.com'
     gem.homepage = 'http://github.com/darkhelmet/rack-gist'
     gem.authors = ['Daniel Huckstep']
-    gem.add_development_dependency 'rspec', '>= 1.2.9'
-    gem.add_development_dependency 'yard', '>= 0'
+    gem.add_bundler_dependencies
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
