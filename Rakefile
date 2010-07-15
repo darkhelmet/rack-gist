@@ -4,19 +4,19 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "rack-gist"
+    gem.name = 'rack-gist'
     gem.summary = %Q{Asynchronous Github Gists. All with rack.}
     gem.description = %Q{Load gists in the background. KTHXBYE!}
-    gem.email = "darkhelmet@darkhelmetlive.com"
-    gem.homepage = "http://github.com/darkhelmet/rack-gist"
-    gem.authors = ["Daniel Huckstep"]
-    gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_development_dependency "yard", ">= 0"
+    gem.email = 'darkhelmet@darkhelmetlive.com'
+    gem.homepage = 'http://github.com/darkhelmet/rack-gist'
+    gem.authors = ['Daniel Huckstep']
+    gem.add_development_dependency 'rspec', '>= 1.2.9'
+    gem.add_development_dependency 'yard', '>= 0'
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+  puts 'Jeweler (or a dependency) not available. Install it with: gem install jeweler'
 end
 
 require 'spec/rake/spectask'
@@ -40,6 +40,6 @@ begin
   YARD::Rake::YardocTask.new
 rescue LoadError
   task :yardoc do
-    abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
+    abort 'YARD is not available. In order to run yardoc, you must: sudo gem install yard'
   end
 end
