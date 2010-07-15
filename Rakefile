@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rack-gist"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Asynchronous Github Gists. All with rack.}
+    gem.description = %Q{Load gists in the background. KTHXBYE!}
     gem.email = "darkhelmet@darkhelmetlive.com"
     gem.homepage = "http://github.com/darkhelmet/rack-gist"
     gem.authors = ["Daniel Huckstep"]
