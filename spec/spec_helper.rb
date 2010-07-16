@@ -5,6 +5,12 @@ require 'rack/gist'
 require 'rack/mock'
 require 'rack/lint'
 
+require 'active_support/core_ext/benchmark'
+require 'active_support/core_ext/array'
+require 'active_support/core_ext/class/attribute_accessors'
+require 'active_support/cache'
+require 'active_support/cache/memory_store'
+
 require 'spec'
 require 'spec/autorun'
 
@@ -30,15 +36,21 @@ Spec::Matchers.define :have_html_tag do |tag|
     @contents = contents
   end
 
+  chain :containing do |inner|
+    @inner = inner
+  end
+
   match do |doc|
     @count ||= 1
     @contents ||= {}
+    @inner ||= //
     doc = Hpricot(doc)
     doc.search(tag).tap do |results|
       results.size.should == @count
       results.each do |node|
+        node.inner_html.match(@inner).should_not be_nil
         @contents.each_pair do |attribute, expected|
-          node[attribute].should == expected
+          node[attribute].should == expected.to_s
         end
       end
     end
