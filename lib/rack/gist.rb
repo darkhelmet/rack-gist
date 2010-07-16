@@ -23,8 +23,8 @@ module Rack
   private
 
     def rewrite(status, headers, body)
-      body = [body].flatten
-      if 'text/html' == headers['Content-Type'] && body.respond_to?(:map!)
+      if 'text/html' == headers['Content-Type']
+        body = [body].flatten
         body.map! do |part|
           Hpricot(part.to_s).tap do |doc|
             extras = false
