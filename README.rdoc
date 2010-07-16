@@ -12,6 +12,8 @@ It uses jQuery. Don't use jQuery? rack-gist loads jQuery form Google for you. Al
 
   use Rack::Gist, :jquery => false
 
+Use something that jQuery conflicts with? Submit me a patch to fix it!
+
 Want to cache your gists?
 
   use Rack::Gist, :cache => ActiveSupport::Cache::MemoryStore.new
