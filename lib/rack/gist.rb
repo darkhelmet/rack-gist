@@ -43,8 +43,8 @@ module Rack
             end if extras
           end.to_s
         end
+        headers['Content-Length'] = body.map { |part| Rack::Utils.bytesize(part) }.inject(0) { |sum, size| sum + size }.to_s
       end
-      headers['Content-Length'] = body.map { |part| Rack::Utils.bytesize(part) }.inject(0) { |sum, size| sum + size }.to_s
       [status, headers, body]
     end
 
@@ -56,7 +56,7 @@ module Rack
         200,
         {
           'Content-Type' => 'text/html',
-          'Content-Length' => Rack::Utils.bytesize(gist)
+          'Content-Length' => Rack::Utils.bytesize(gist).to_s
         },
         [gist]
       ]

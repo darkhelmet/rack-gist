@@ -21,6 +21,7 @@ describe "Rack::Gist" do
   it 'should pass Rack::Lint' do
     status, headers, body = Rack::Lint.new(middleware).call(mock_env)
     status, headers, body = Rack::Lint.new(middleware).call(mock_env('/multiple'))
+    status, headers, body = Rack::Lint.new(middleware).call(mock_env("/gist.github.com/#{@gist_id}/example.pig"))
   end
 
   it 'should rewrite gist embed tags for full gists' do
