@@ -52,13 +52,13 @@ module Rack
     end
 
     def serve_gist(env)
-      gist_id, file = path(env).match(%r{gist\.github\.com/(\d+)(?:/(.*))?})[1,2]
+      gist_id, file = path(env).match(%r{gist\.github\.com/(\d+)(?:/(.*))?\.js})[1,2]
       cache = @options[:cache]
       gist = (cache ? cache.fetch(cache_key(gist_id, file), :expires_in => 3600) { get_gist(gist_id, file) } : get_gist(gist_id, file)).to_s
       [
         200,
         {
-          'Content-Type' => 'text/html',
+          'Content-Type' => 'application/javascript',
           'Content-Length' => Rack::Utils.bytesize(gist).to_s
         },
         [gist]
@@ -70,7 +70,9 @@ module Rack
       gist = gist.split("\n").reject do |part|
         part.empty?
       end.last
-      gist[%r{document\.write\('(.*)'\)}, 1].gsub(/\\(["'\/])/, '\1').gsub('\n', "\n").gsub('\\\\', '\\')
+      selector = "#rack-gist-#{gist_id}"
+      selector << %Q{[rack-gist-file="#{file}"]} if file
+      gist.sub(/document\.write/, %Q{$('#{selector}').replaceWith})
     end
 
     def cache_key(gist_id, file)
@@ -113,9 +115,7 @@ module Rack
               if (file = $(this).attr('rack-gist-file')) {
                 url += '/' + file;
               }
-              $.get(url, function(data) {
-                $(div).replaceWith(data);
-              });
+              $.getScript(url + '.js');
             });
           });
           //]]>
