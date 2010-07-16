@@ -1,9 +1,25 @@
 = rack-gist
 
-Description goes here.
+Install, require, use
+
+  gem install rack-gist
+  require 'rack/gist'
+  use Rack::Gist
+
+It loads standard gist embeds in the background. With jQuery. THE GISTS ARE NOW DIAMONDS!
+
+It uses jQuery. Don't use jQuery? rack-gist loads jQuery form Google for you. Already have jQuery? Ignore it.
+
+  use Rack::Gist, :jquery => false
+
+Want to cache your gists?
+
+  use Rack::Gist, :cache => ActiveSupport::Cache::MemoryStore.new
+
+Or use an existing cache.
 
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
