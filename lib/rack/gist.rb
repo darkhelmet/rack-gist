@@ -36,11 +36,14 @@ module Rack
                 tag.swap("<div class='rack-gist' id='rack-gist-#{id}' gist-id='#{id}' #{extra}>Can't see this Gist? <a rel='nofollow' href='http://gist.github.com/#{id}#{suffix}'>View it on Github!</a></div>")
               end
             end
-            doc.search('head').tap do |head|
-              head.append(css_html)
-              head.append(jquery_link) if @options[:jquery]
-              head.append(jquery_helper)
-            end if extras
+
+            if extras
+              doc.search('head').append(css_html)
+              doc.search('body').tap do |node|
+                node.append(jquery_link) if @options[:jquery]
+                node.append(jquery_helper)
+              end
+            end
           end.to_s
         end
         headers['Content-Length'] = body.map { |part| Rack::Utils.bytesize(part) }.inject(0) { |sum, size| sum + size }.to_s
