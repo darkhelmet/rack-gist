@@ -107,13 +107,14 @@ module Rack
           //<![CDATA[
           $(document).ready(function() {
             $('.rack-gist').each(function() {
+              var div = this;
               var url = '/gist.github.com/' + $(this).attr('gist-id');
               var file = false;
               if (file = $(this).attr('rack-gist-file')) {
                 url += '/' + file;
               }
               $.get(url, function(data) {
-                $(this).replaceWith(data);
+                $(div).replaceWith(data);
               });
             });
           });
