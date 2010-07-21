@@ -5,7 +5,6 @@ module Rack
   class Gist
     def initialize(app, options = {})
       @app = app
-      @gist_path =
       @options = {
         :jquery => true
       }.merge(options)
