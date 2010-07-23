@@ -11,7 +11,7 @@ module Rack
     end
 
     def call(env)
-      if path(env).match(%r{^/gist\.github\.com})
+      if path(env).match(regex)
         serve_gist(env)
       else
         status, headers, body = @app.call(env)
@@ -29,7 +29,7 @@ module Rack
             extras = false
             doc.search('script[@src*="gist.github.com"]').each do |tag|
               extras = true
-              tag['src'].match(regex).tap do |match|
+              tag['src'].match(%r{gist\.github\.com/(\d+)\.js(?:\?file=(.*))?}).tap do |match|
                 id, file = match[1, 2]
                 suffix, extra = file ? ["#file_#{file}", "rack-gist-file='#{file}'"] : ['', '']
                 tag.swap("<div class='rack-gist' id='rack-gist-#{id}' gist-id='#{id}' #{extra}>Can't see this Gist? <a rel='nofollow' href='http://gist.github.com/#{id}#{suffix}'>View it on Github!</a></div>")
@@ -51,7 +51,7 @@ module Rack
     end
 
     def serve_gist(env)
-      gist_id, file = path(env).match(%r{gist\.github\.com/(\d+)(?:/(.*))?\.js})[1,2]
+      gist_id, file = path(env).match(regex)[1,2]
       cache = @options[:cache]
       gist = (cache ? cache.fetch(cache_key(gist_id, file), :expires_in => 3600) { get_gist(gist_id, file) } : get_gist(gist_id, file)).to_s
       [
@@ -91,7 +91,7 @@ module Rack
     end
 
     def regex
-      @regex ||= %r{gist\.github\.com/(\d+)\.js(?:\?file=(.*))?}
+      @regex ||= %r{gist\.github\.com/(\d+)(?:/(.*))?\.js}
     end
 
     def css_html

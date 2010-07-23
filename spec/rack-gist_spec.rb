@@ -5,8 +5,9 @@ describe "Rack::Gist" do
     @gist_id = 348301
     @app = lambda do |env|
       headers = { 'Content-Type' => 'text/html' }
-      body =  File.read(File.join(File.dirname(__FILE__), "body-#{env['PATH_INFO'].gsub(/[^\w]/, '')}.html"))
-      [200, headers, body]
+      body = File.read(File.join(File.dirname(__FILE__), "body-#{env['PATH_INFO'].gsub(/[^\w]/, '')}.html")) rescue ''
+      status = 404 if body.empty?
+      [status || 200, headers, body]
     end
   end
 
@@ -137,6 +138,13 @@ describe "Rack::Gist" do
       status.should == 200
       headers['Content-Type'].should == 'application/javascript'
       body.should == body2
+    end
+  end
+
+  it 'should not explode if not given a gist' do
+    middleware.tap do |a|
+      status, headers, body = a.call(mock_env('/gist.github.com'))
+      status.should == 404
     end
   end
 end
