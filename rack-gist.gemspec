@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rack-gist}
-  s.version = "1.0.5"
+  s.version = "1.0.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Huckstep"]
-  s.date = %q{2010-07-16}
+  s.date = %q{2010-08-08}
   s.description = %q{Load gists in the background. KTHXBYE!}
   s.email = %q{darkhelmet@darkhelmetlive.com}
   s.extra_rdoc_files = [
