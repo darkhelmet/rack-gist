@@ -1,4 +1,4 @@
-require 'hpricot'
+require 'nokogiri'
 require 'rest-client'
 
 module Rack
@@ -22,32 +22,34 @@ module Rack
   private
 
     def rewrite(status, headers, body)
-      if 'text/html' == headers['Content-Type']
-        body = [body].flatten
-        body.map! do |part|
-          Hpricot(part.to_s).tap do |doc|
-            extras = false
-            doc.search('script[@src*="gist.github.com"]').each do |tag|
-              extras = true
-              tag['src'].match(%r{gist\.github\.com/(\d+)\.js(?:\?file=(.*))?}).tap do |match|
-                id, file = match[1, 2]
-                suffix, extra = file ? ["#file_#{file}", "rack-gist-file='#{file}'"] : ['', '']
-                tag.swap("<div class='rack-gist' id='rack-gist-#{id}' gist-id='#{id}' #{extra}>Can't see this Gist? <a rel='nofollow' href='http://gist.github.com/#{id}#{suffix}'>View it on Github!</a></div>")
-              end
+      if headers['Content-Type'].to_s.match('text/html')
+        b = ''
+        body.each { |part| b << part.to_s }
+        body = Nokogiri(b).tap do |doc|
+          if swap_tags(doc)
+            doc.at('head').add_child(css_html)
+            doc.at('body').tap do |node|
+              node.add_child(jquery_link) if @options[:jquery]
+              node.add_child(jquery_helper)
             end
-
-            if extras
-              doc.search('head').append(css_html)
-              doc.search('body').tap do |node|
-                node.append(jquery_link) if @options[:jquery]
-                node.append(jquery_helper)
-              end
-            end
-          end.to_s
-        end
+          end
+        end.to_s
         headers['Content-Length'] = body.map { |part| Rack::Utils.bytesize(part) }.inject(0) { |sum, size| sum + size }.to_s
       end
       [status, headers, body]
+    end
+
+    def swap_tags(doc)
+      extras = false
+      doc.search('script[@src*="gist.github.com"]').each do |tag|
+        extras = true
+        tag['src'].match(%r{gist\.github\.com/(\d+)\.js(?:\?file=(.*))?}).tap do |match|
+          id, file = match[1, 2]
+          suffix, extra = file ? ["#file_#{file}", "rack-gist-file='#{file}'"] : ['', '']
+          tag.swap("<p class='rack-gist' id='rack-gist-#{id}' gist-id='#{id}' #{extra}>Can't see this Gist? <a rel='nofollow' href='http://gist.github.com/#{id}#{suffix}'>View it on Github!</a></p>")
+        end
+      end
+      extras
     end
 
     def serve_gist(env)

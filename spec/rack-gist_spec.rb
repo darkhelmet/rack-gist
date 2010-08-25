@@ -3,8 +3,10 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Rack::Gist" do
   before(:all) do
     @gist_id = 348301
-    @app = lambda do |env|
-      headers = { 'Content-Type' => 'text/html' }
+  end
+
+  def app(headers)
+    lambda do |env|
       body = File.read(File.join(File.dirname(__FILE__), "body-#{env['PATH_INFO'].gsub(/[^\w]/, '')}.html")) rescue ''
       status = 404 if body.empty?
       [status || 200, headers, body]
@@ -15,8 +17,8 @@ describe "Rack::Gist" do
     Rack::MockRequest.env_for(path)
   end
 
-  def middleware(options = {})
-    Rack::Gist.new(@app, options)
+  def middleware(options = {}, headers = { 'Content-Type' => 'text/html' })
+    Rack::Gist.new(app(headers), options)
   end
 
   it 'should pass Rack::Lint' do
@@ -30,7 +32,16 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env)
       status.should == 200
       headers['Content-Type'].should == 'text/html'
-      body.to_s.should have_html_tag('div').with('id' => "rack-gist-#{@gist_id}", 'gist-id' => @gist_id, 'class' => 'rack-gist')
+      body.to_s.should have_html_tag('p').with('id' => "rack-gist-#{@gist_id}", 'gist-id' => @gist_id, 'class' => 'rack-gist')
+    end
+  end
+
+  it 'should rewrite gist embed tags for full gists when content_type includes other things' do
+    middleware({}, { 'Content-Type' => 'text/html; charset=utf-8' }).tap do |a|
+      status, headers, body = a.call(mock_env)
+      status.should == 200
+      headers['Content-Type'].should == 'text/html; charset=utf-8'
+      body.to_s.should have_html_tag('p').with('id' => "rack-gist-#{@gist_id}", 'gist-id' => @gist_id, 'class' => 'rack-gist')
     end
   end
 
@@ -39,7 +50,7 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env('/partial'))
       status.should == 200
       headers['Content-Type'].should == 'text/html'
-      body.to_s.should have_html_tag('div').with('id' => "rack-gist-#{@gist_id}", 'gist-id' => @gist_id, 'class' => 'rack-gist', 'rack-gist-file' => 'example.pig')
+      body.to_s.should have_html_tag('p').with('id' => "rack-gist-#{@gist_id}", 'gist-id' => @gist_id, 'class' => 'rack-gist', 'rack-gist-file' => 'example.pig')
     end
   end
 
@@ -102,7 +113,7 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env)
       status.should == 200
       headers['Content-Type'].should == 'text/html'
-      headers['Content-Length'].should == '913'
+      headers['Content-Length'].should == '996'
     end
   end
 
