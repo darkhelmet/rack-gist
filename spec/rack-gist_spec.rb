@@ -143,7 +143,24 @@ describe "Rack::Gist" do
       headers['Content-Type'].should == 'application/javascript'
 
       RestClient.should_not_receive(:get)
-      cache.should_receive(:fetch).once.with("rack-gist:#{@gist_id}:example.pig", :expires_in => 3600).and_return(body) # !.hour
+      cache.should_receive(:fetch).once.with("rack-gist:#{@gist_id}:example.pig", :expires_in => 3600).and_return(body) # 1.hour
+
+      status, headers, body2 = a.call(mock_env("/gist.github.com/#{@gist_id}/example.pig.js"))
+      status.should == 200
+      headers['Content-Type'].should == 'application/javascript'
+      body.should == body2
+    end
+  end
+
+  it 'should cache things for a different time if given cache_time' do
+    cache = ActiveSupport::Cache::MemoryStore.new
+    middleware(:cache => cache, :cache_time => 60).tap do |a|
+      status, headers, body = a.call(mock_env("/gist.github.com/#{@gist_id}/example.pig.js"))
+      status.should == 200
+      headers['Content-Type'].should == 'application/javascript'
+
+      RestClient.should_not_receive(:get)
+      cache.should_receive(:fetch).once.with("rack-gist:#{@gist_id}:example.pig", :expires_in => 60).and_return(body) # 1.hour
 
       status, headers, body2 = a.call(mock_env("/gist.github.com/#{@gist_id}/example.pig.js"))
       status.should == 200
@@ -156,6 +173,30 @@ describe "Rack::Gist" do
     middleware.tap do |a|
       status, headers, body = a.call(mock_env('/gist.github.com'))
       status.should == 404
+    end
+  end
+
+  it 'should set http caching headers by default' do
+    middleware.tap do |a|
+      status, headers, body = a.call(mock_env("/gist.github.com/#{@gist_id}/example.pig.js"))
+      headers['Vary'].should == 'Accept-Encoding'
+      headers['Cache-Control'].should == 'public, must-revalidate, max-age=3600' # 1.hour
+    end
+  end
+
+  it 'should be able to configure cache time' do
+    middleware(:http_cache_time => 60).tap do |a|
+      status, headers, body = a.call(mock_env("/gist.github.com/#{@gist_id}/example.pig.js"))
+      headers['Vary'].should == 'Accept-Encoding'
+      headers['Cache-Control'].should == 'public, must-revalidate, max-age=60' # 1.hour
+    end
+  end
+
+  it 'should be able to disable caching by setting http_cache_time to nil' do
+    middleware(:http_cache_time => nil).tap do |a|
+      status, headers, body = a.call(mock_env("/gist.github.com/#{@gist_id}/example.pig.js"))
+      headers['Vary'].should == 'Accept-Encoding'
+      headers['Cache-Control'].should be_nil
     end
   end
 end

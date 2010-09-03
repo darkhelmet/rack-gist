@@ -6,7 +6,9 @@ module Rack
     def initialize(app, options = {})
       @app = app
       @options = {
-        :jquery => true
+        :jquery => true,
+        :cache_time => 3600,
+        :http_cache_time => 3600
       }.merge(options)
     end
 
@@ -55,15 +57,18 @@ module Rack
     def serve_gist(env)
       gist_id, file = path(env).match(regex)[1,2]
       cache = @options[:cache]
-      gist = (cache ? cache.fetch(cache_key(gist_id, file), :expires_in => 3600) { get_gist(gist_id, file) } : get_gist(gist_id, file)).to_s
-      [
-        200,
-        {
-          'Content-Type' => 'application/javascript',
-          'Content-Length' => Rack::Utils.bytesize(gist).to_s
-        },
-        [gist]
-      ]
+      gist = (cache ? cache.fetch(cache_key(gist_id, file), :expires_in => @options[:cache_time]) { get_gist(gist_id, file) } : get_gist(gist_id, file)).to_s
+      headers = {
+        'Content-Type' => 'application/javascript',
+        'Content-Length' => Rack::Utils.bytesize(gist).to_s,
+        'Vary' => 'Accept-Encoding'
+      }
+
+      if @options[:http_cache_time]
+        headers['Cache-Control'] = "public, must-revalidate, max-age=#{@options[:http_cache_time]}"
+      end
+
+      [200, headers, [gist]]
     end
 
     def get_gist(gist_id, file)
