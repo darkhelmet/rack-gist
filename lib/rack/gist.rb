@@ -24,6 +24,7 @@ module Rack
   private
 
     def rewrite(status, headers, body)
+      body = [body].flatten
       if headers['Content-Type'].to_s.match('text/html')
         b = ''
         body.each { |part| b << part.to_s }
@@ -36,6 +37,7 @@ module Rack
             end
           end
         end.to_s
+        body = [body]
         headers['Content-Length'] = body.map { |part| Rack::Utils.bytesize(part) }.inject(0) { |sum, size| sum + size }.to_s
       end
       [status, headers, body]
