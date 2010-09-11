@@ -24,10 +24,9 @@ module Rack
   private
 
     def rewrite(status, headers, body)
-      body = [body].flatten
       if headers['Content-Type'].to_s.match('text/html')
         b = ''
-        body.each { |part| b << part.to_s }
+        body.each { |part| b << part }
         body = Nokogiri(b).tap do |doc|
           if swap_tags(doc)
             doc.at('head').add_child(css_html)

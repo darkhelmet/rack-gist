@@ -15,7 +15,7 @@ describe "Rack::Gist" do
     lambda do |env|
       body = File.read(File.join(File.dirname(__FILE__), "body-#{env['PATH_INFO'].gsub(/[^\w]/, '')}.html")) rescue ''
       status = 404 if body.empty?
-      [status || 200, headers, body]
+      [status || 200, headers, [body]]
     end
   end
 
@@ -119,7 +119,6 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env)
       status.should == 200
       headers['Content-Type'].should == 'text/html'
-      File.open(RUBY_VERSION, 'w') { |f| f.write(pbody(body)) }
       headers['Content-Length'].should == '1069'
     end
   end
