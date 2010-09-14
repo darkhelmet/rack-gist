@@ -8,7 +8,8 @@ module Rack
       @options = {
         :jquery => true,
         :cache_time => 3600,
-        :http_cache_time => 3600
+        :http_cache_time => 3600,
+        :encoding => 'utf-8'
       }.merge(options)
     end
 
@@ -35,7 +36,7 @@ module Rack
               node.add_child(jquery_helper)
             end
           end
-        end.to_s
+        end.to_html(:encoding => @options[:encoding])
         body = [body]
         headers['Content-Length'] = body.map { |part| Rack::Utils.bytesize(part) }.inject(0) { |sum, size| sum + size }.to_s
       end

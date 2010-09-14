@@ -119,7 +119,7 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env)
       status.should == 200
       headers['Content-Type'].should == 'text/html'
-      headers['Content-Length'].should == '1069'
+      headers['Content-Length'].should == '1066'
     end
   end
 
@@ -203,6 +203,18 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env("/gist.github.com/#{@gist_id}/example.pig.js"))
       headers['Vary'].should == 'Accept-Encoding'
       headers['Cache-Control'].should be_nil
+    end
+  end
+
+  it 'should encode to the correct content type' do
+    middleware.tap do |a|
+      status, headers, body = a.call(mock_env)
+      pbody(body).should match('utf-8')
+    end
+
+    middleware(:encoding => 'US-ASCII').tap do |a|
+      status, headers, body = a.call(mock_env)
+      pbody(body).should match('US-ASCII')
     end
   end
 end
