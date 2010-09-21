@@ -123,7 +123,11 @@ module Rack
               if (file = $(this).attr('rack-gist-file')) {
                 url += '/' + file;
               }
-              $.getScript(url + '.js');
+              $.ajax({
+                url: url + '.js',
+                dataType: 'script',
+                cache: true
+              });
             });
           });
           //]]>
