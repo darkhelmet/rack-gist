@@ -104,7 +104,7 @@ module Rack
     end
 
     def css_html
-      "<link rel='stylesheet' href='http://gist.github.com/stylesheets/gist/embed.css' />\n"
+      "<link rel='stylesheet' href='https://gist.github.com/stylesheets/gist/embed.css' />\n"
     end
 
     def jquery_link

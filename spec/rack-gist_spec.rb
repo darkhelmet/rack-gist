@@ -74,7 +74,7 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env('/multiple'))
       status.should == 200
       headers['Content-Type'].should == 'text/html'
-      pbody(body).should have_html_tag('link').with('rel' => 'stylesheet', 'href' => 'http://gist.github.com/stylesheets/gist/embed.css')
+      pbody(body).should have_html_tag('link').with('rel' => 'stylesheet', 'href' => 'https://gist.github.com/stylesheets/gist/embed.css')
     end
   end
 
@@ -119,7 +119,7 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env)
       status.should == 200
       headers['Content-Type'].should == 'text/html'
-      headers['Content-Length'].should == '1165'
+      headers['Content-Length'].should == '1166'
     end
   end
 
