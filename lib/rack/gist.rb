@@ -114,19 +114,21 @@ module Rack
     def jquery_helper
       <<-EOJQ
         <script type='text/javascript'>
-          $('.rack-gist').each(function() {
-            var div = this;
-            var url = '/gist.github.com/' + $(this).attr('gist-id');
-            var file = false;
-            if (file = $(this).attr('rack-gist-file')) {
-              url += '/' + file;
-            }
-            $.ajax({
-              url: url + '.js',
-              dataType: 'script',
-              cache: true
+          setTimeout(function() {
+            $('.rack-gist').each(function() {
+              var div = this;
+              var url = '/gist.github.com/' + $(this).attr('gist-id');
+              var file = false;
+              if (file = $(this).attr('rack-gist-file')) {
+                url += '/' + file;
+              }
+              $.ajax({
+                url: url + '.js',
+                dataType: 'script',
+                cache: true
+              });
             });
-          });
+          }, 500);
         </script>
       EOJQ
     end
