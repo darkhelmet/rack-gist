@@ -90,7 +90,7 @@ module Rack
     end
 
     def gist_url(gist_id, file)
-      url = "http://gist.github.com/#{gist_id}.js"
+      url = "https://gist.github.com/#{gist_id}.js"
       url << "?file=#{file}" unless file.nil?
       url
     end
