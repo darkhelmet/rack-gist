@@ -22,8 +22,8 @@ require 'fakeweb'
 
 # Disallow web access
 FakeWeb.allow_net_connect = false
-FakeWeb.register_uri(:get, 'http://gist.github.com/348301.js', :body => File.read(File.join(File.dirname(__FILE__), 'full-gist.js')), :content_type => 'text/javascript; charset=utf-8')
-FakeWeb.register_uri(:get, 'http://gist.github.com/348301.js?file=example.pig', :body => File.read(File.join(File.dirname(__FILE__), 'partial-gist.js')), :content_type => 'text/javascript; charset=utf-8')
+FakeWeb.register_uri(:get, 'https://gist.github.com/348301.js', :body => File.read(File.join(File.dirname(__FILE__), 'full-gist.js')), :content_type => 'text/javascript; charset=utf-8')
+FakeWeb.register_uri(:get, 'https://gist.github.com/348301.js?file=example.pig', :body => File.read(File.join(File.dirname(__FILE__), 'partial-gist.js')), :content_type => 'text/javascript; charset=utf-8')
 
 Spec::Matchers.define :have_html_tag do |tag|
   chain :count do |count|

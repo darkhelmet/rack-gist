@@ -114,7 +114,8 @@ module Rack
     def jquery_helper
       <<-EOJQ
         <script type='text/javascript'>
-          setTimeout(function() {
+          //<![CDATA[
+          $(document).ready(function() {
             $('.rack-gist').each(function() {
               var div = this;
               var url = '/gist.github.com/' + $(this).attr('gist-id');
@@ -128,7 +129,8 @@ module Rack
                 cache: true
               });
             });
-          }, 500);
+          });
+          //]]>
         </script>
       EOJQ
     end
