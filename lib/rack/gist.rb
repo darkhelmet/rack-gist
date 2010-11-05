@@ -38,7 +38,7 @@ module Rack
           end
         end.to_html(:encoding => @options[:encoding])
         body = [body]
-        headers['Content-Length'] = body.map { |part| Rack::Utils.bytesize(part) }.inject(0) { |sum, size| sum + size }.to_s
+        headers['Content-Length'] = Rack::Utils.bytesize(body.first).to_s
       end
       [status, headers, body]
     end
@@ -117,7 +117,6 @@ module Rack
           //<![CDATA[
           $(document).ready(function() {
             $('.rack-gist').each(function() {
-              var div = this;
               var url = '/gist.github.com/' + $(this).attr('gist-id');
               var file = false;
               if (file = $(this).attr('rack-gist-file')) {
