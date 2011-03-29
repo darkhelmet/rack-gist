@@ -119,7 +119,7 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env)
       status.should == 200
       headers['Content-Type'].should == 'text/html'
-      headers['Content-Length'].should == '1136'
+      headers['Content-Length'].should == '1144'
     end
   end
 
