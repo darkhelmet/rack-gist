@@ -1,10 +1,10 @@
 source 'http://rubygems.org'
 
-gem 'nokogiri', '~> 1.4.4'
-gem 'rest-client', '~> 1.6.0'
+gem 'nokogiri', '~> 1.4'
+gem 'rest-client', '~> 1.6'
 
 group :development do
-  gem 'jeweler', '~> 1.5.2'
+  gem 'jeweler', '~> 1.6'
   gem 'fakeweb', '~> 1.2.8'
   gem 'rspec', '~> 1.3.0'
   gem 'yard', '~> 0.5.8'

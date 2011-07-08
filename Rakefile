@@ -11,7 +11,6 @@ begin
     gem.email = 'darkhelmet@darkhelmetlive.com'
     gem.homepage = 'http://github.com/darkhelmet/rack-gist'
     gem.authors = ['Daniel Huckstep']
-    gem.add_bundler_dependencies
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
