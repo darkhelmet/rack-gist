@@ -26,21 +26,28 @@ module Rack
 
     def rewrite(status, headers, body)
       if headers['Content-Type'].to_s.match('text/html')
-        b = ''
-        body.each { |part| b << part }
-        body = Nokogiri(b).tap do |doc|
-          if swap_tags(doc)
-            doc.at('head').add_child(css_html)
-            doc.at('body').tap do |node|
-              node.add_child(jquery_link) if @options[:jquery]
-              node.add_child(jquery_helper)
-            end
-          end
-        end.to_html(:encoding => @options[:encoding])
-        body = [body]
+        body = [rewrite_body(body)]
         headers['Content-Length'] = Rack::Utils.bytesize(body.first).to_s
       end
       [status, headers, body]
+    end
+
+    def rewrite_body(body)
+      Nokogiri(stringify_body(body)).tap do |doc|
+        if swap_tags(doc)
+          doc.at('head').add_child(css_html)
+          doc.at('body').tap do |node|
+            node.add_child(jquery_link) if @options[:jquery]
+            node.add_child(jquery_helper)
+          end
+        end
+      end.to_html(:encoding => @options[:encoding])
+    end
+
+    def stringify_body(body)
+      b = ''
+      body.each { |part| b << part }
+      b
     end
 
     def swap_tags(doc)
