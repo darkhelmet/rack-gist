@@ -54,7 +54,7 @@ module Rack
       extras = false
       doc.search('script[@src*="gist.github.com"]').each do |tag|
         extras = true
-        tag['src'].match(%r{gist\.github\.com/(\d+)\.js(?:\?file=(.*))?}).tap do |match|
+        tag['src'].match(%r{gist\.github\.com/([a-f0-9]+)\.js(?:\?file=(.*))?}).tap do |match|
           id, file = match[1, 2]
           suffix, extra = file ? ["#file_#{file}", "rack-gist-file='#{file}'"] : ['', '']
           tag.swap("<p class='rack-gist' id='rack-gist-#{id}' gist-id='#{id}' #{extra}>Can't see this Gist? <a rel='nofollow' href='http://gist.github.com/#{id}#{suffix}'>View it on Github!</a></p>")
@@ -107,7 +107,7 @@ module Rack
     end
 
     def regex
-      @regex ||= %r{gist\.github\.com/(\d+)(?:/(.*))?\.js}
+      @regex ||= %r{gist\.github\.com/([a-f0-9]+)(?:/(.*))?\.js}
     end
 
     def css_html
