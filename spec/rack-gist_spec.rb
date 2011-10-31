@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Rack::Gist" do
   before(:all) do
     @gist_id = 348301
+    @private_gist_id = '12452a5d2e9938f98da2'
   end
 
   def pbody(body)
@@ -39,6 +40,15 @@ describe "Rack::Gist" do
       status.should == 200
       headers['Content-Type'].should == 'text/html'
       pbody(body).should have_html_tag('p').with('id' => "rack-gist-#{@gist_id}", 'gist-id' => @gist_id, 'class' => 'rack-gist')
+    end
+  end
+
+  it 'should rewrite private gist embed tags for full gists' do
+    middleware.tap do |a|
+      status, headers, body = a.call(mock_env('/private'))
+      status.should == 200
+      headers['Content-Type'].should == 'text/html'
+      pbody(body).should have_html_tag('p').with('id' => "rack-gist-#{@private_gist_id}", 'gist-id' => @private_gist_id, 'class' => 'rack-gist')
     end
   end
 
