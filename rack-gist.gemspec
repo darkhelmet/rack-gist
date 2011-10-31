@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rack-gist}
-  s.version = "1.1.8"
+  s.version = "1.1.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Huckstep"]
-  s.date = %q{2011-07-07}
+  s.date = %q{2011-10-30}
   s.description = %q{Load gists in the background. KTHXBYE!}
   s.email = %q{darkhelmet@darkhelmetlive.com}
   s.extra_rdoc_files = [
@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     ".rvmrc",
+    ".travis.yml",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE",
@@ -31,6 +32,7 @@ Gem::Specification.new do |s|
     "spec/body-multiple.html",
     "spec/body-none.html",
     "spec/body-partial.html",
+    "spec/body-private.html",
     "spec/full-gist.js",
     "spec/partial-gist.js",
     "spec/rack-gist_spec.rb",
