@@ -118,7 +118,7 @@ module Rack
     end
 
     def jquery_link
-      "<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js'></script>\n"
+      "<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>\n"
     end
 
     def jquery_helper
