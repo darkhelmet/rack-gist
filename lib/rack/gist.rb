@@ -3,14 +3,11 @@ require 'rest-client'
 
 module Rack
   class Gist
+    DefaultCacheTime = 3600
+
     def initialize(app, options = {})
       @app = app
-      @options = {
-        :jquery => true,
-        :cache_time => 3600,
-        :http_cache_time => 3600,
-        :encoding => 'utf-8'
-      }.merge(options)
+      @options = options
     end
 
     def call(env)
@@ -37,11 +34,11 @@ module Rack
         if swap_tags(doc)
           doc.at('head').add_child(css_html)
           doc.at('body').tap do |node|
-            node.add_child(jquery_link) if @options[:jquery]
             node.add_child(jquery_helper)
+            node.add_child(jquery_link) if @options.fetch(:jquery, true)
           end
         end
-      end.to_html(:encoding => @options[:encoding])
+      end.to_html(:encoding => @options.fetch(:encoding, 'utf-8'))
     end
 
     def stringify_body(body)
@@ -65,19 +62,25 @@ module Rack
 
     def serve_gist(env)
       gist_id, file = path(env).match(regex)[1,2]
-      cache = @options[:cache]
-      gist = (cache ? cache.fetch(cache_key(gist_id, file), :expires_in => @options[:cache_time]) { get_gist(gist_id, file) } : get_gist(gist_id, file)).to_s
+      gist = fetch_gist(gist_id, file).to_s
       headers = {
         'Content-Type' => 'application/javascript',
         'Content-Length' => Rack::Utils.bytesize(gist).to_s,
         'Vary' => 'Accept-Encoding'
       }
 
-      if @options[:http_cache_time]
-        headers['Cache-Control'] = "public, must-revalidate, max-age=#{@options[:http_cache_time]}"
-      end
+      headers['Cache-Control'] = "public, must-revalidate, max-age=#{@options.fetch(:http_cache_time, DefaultCacheTime)}"
 
       [200, headers, [gist]]
+    end
+
+    def fetch_gist(gist_id, file)
+      if cache = @options.fetch(:cache, false)
+        expires = @options.fetch(:cache_time, DefaultCacheTime)
+        cache.fetch(cache_key(gist_id, file), :expires_in => expires) { get_gist(gist_id, file) }
+      else
+        get_gist(gist_id, file)
+      end
     end
 
     def get_gist(gist_id, file)

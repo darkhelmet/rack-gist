@@ -208,11 +208,11 @@ describe "Rack::Gist" do
     end
   end
 
-  it 'should be able to disable caching by setting http_cache_time to nil' do
-    middleware(:http_cache_time => nil).tap do |a|
+  it 'should be able to disable caching by setting http_cache_time to 0' do
+    middleware(:http_cache_time => 0).tap do |a|
       status, headers, body = a.call(mock_env("/gist.github.com/#{@gist_id}/example.pig.js"))
       headers['Vary'].should == 'Accept-Encoding'
-      headers['Cache-Control'].should be_nil
+      headers['Cache-Control'].should == "public, must-revalidate, max-age=0"
     end
   end
 
