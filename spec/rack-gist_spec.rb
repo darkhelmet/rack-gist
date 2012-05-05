@@ -66,7 +66,7 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env('/partial'))
       status.should == 200
       headers['Content-Type'].should == 'text/html'
-      pbody(body).should have_html_tag('p').with('id' => "rack-gist-#{@gist_id}", 'gist-id' => @gist_id, 'class' => 'rack-gist', 'rack-gist-file' => 'example.pig')
+      pbody(body).should have_html_tag('p').with('id' => "rack-gist-#{@gist_id}", 'gist-id' => @gist_id, 'class' => 'rack-gist', 'rack-gist-file' => 'example.pig', 'rack-gist-url' => '/gist.github.com/348301/example.pig.js')
     end
   end
 
@@ -115,6 +115,15 @@ describe "Rack::Gist" do
     end
   end
 
+  it "shouldn't include the jquery helper if told not to" do
+    middleware(:jquery => false, :helper => false).tap do |a|
+      status, headers, body = a.call(mock_env)
+      status.should == 200
+      headers['Content-Type'].should == 'text/html'
+      pbody(body).should_not have_html_tag('script').containing('CDATA')
+    end
+  end
+
   it "shouldn't include the jquery helper if no gist is present" do
     middleware.tap do |a|
       status, headers, body = a.call(mock_env)
@@ -129,7 +138,7 @@ describe "Rack::Gist" do
       status, headers, body = a.call(mock_env)
       status.should == 200
       headers['Content-Type'].should == 'text/html'
-      headers['Content-Length'].should == '1144'
+      headers['Content-Length'].should == '992'
     end
   end
 

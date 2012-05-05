@@ -34,8 +34,8 @@ module Rack
         if swap_tags(doc)
           doc.at('head').add_child(css_html)
           doc.at('body').tap do |node|
-            node.add_child(jquery_helper)
             node.add_child(jquery_link) if @options.fetch(:jquery, true)
+            node.add_child(jquery_helper) if @options.fetch(:helper, true)
           end
         end
       end.to_html(:encoding => @options.fetch(:encoding, 'utf-8'))
@@ -53,8 +53,16 @@ module Rack
         extras = true
         tag['src'].match(%r{gist\.github\.com/([a-f0-9]+)\.js(?:\?file=(.*))?}).tap do |match|
           id, file = match[1, 2]
-          suffix, extra = file ? ["#file_#{file}", "rack-gist-file='#{file}'"] : ['', '']
-          tag.swap("<p class='rack-gist' id='rack-gist-#{id}' gist-id='#{id}' #{extra}>Can't see this Gist? <a rel='nofollow' href='http://gist.github.com/#{id}#{suffix}'>View it on Github!</a></p>")
+          url = "/gist.github.com/#{id}"
+          if file
+            url += "/#{file}"
+            suffix = "#file_#{file}"
+            extra = %Q{rack-gist-file="#{file}"}
+          else
+            suffix = nil
+            extra = nil
+          end
+          tag.swap(%Q{<p class="rack-gist" id="rack-gist-#{id}"" gist-id="#{id}" rack-gist-url="#{url}.js" #{extra}>Can't see this Gist? <a rel="nofollow" href="http://gist.github.com/#{id}#{suffix}">View it on Github!</a></p>})
         end
       end
       extras
@@ -127,13 +135,8 @@ module Rack
           //<![CDATA[
           $(document).ready(function() {
             $('.rack-gist').each(function() {
-              var url = '/gist.github.com/' + $(this).attr('gist-id');
-              var file = false;
-              if (file = $(this).attr('rack-gist-file')) {
-                url += '/' + file;
-              }
               $.ajax({
-                url: url + '.js',
+                url: $(this).attr('rack-gist-url'),
                 dataType: 'script',
                 cache: true
               });
