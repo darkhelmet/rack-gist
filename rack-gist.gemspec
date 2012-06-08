@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rack-gist"
-  s.version = "1.2.0"
+  s.version = "1.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Huckstep"]
-  s.date = "2012-05-05"
+  s.date = "2012-06-08"
   s.description = "Load gists in the background. KTHXBYE!"
   s.email = "darkhelmet@darkhelmetlive.com"
   s.extra_rdoc_files = [
@@ -51,29 +51,26 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<nokogiri>, ["~> 1.4"])
       s.add_runtime_dependency(%q<rest-client>, ["~> 1.6"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.6"])
-      s.add_development_dependency(%q<fakeweb>, ["~> 1.2.8"])
-      s.add_development_dependency(%q<rspec>, ["~> 1.3.0"])
+      s.add_development_dependency(%q<rspec>, ["~> 2.10"])
       s.add_development_dependency(%q<yard>, ["~> 0.5.8"])
-      s.add_development_dependency(%q<rack>, ["~> 1.2.1"])
+      s.add_development_dependency(%q<rack>, ["~> 1.4.1"])
       s.add_development_dependency(%q<activesupport>, ["~> 2.3.8"])
     else
       s.add_dependency(%q<nokogiri>, ["~> 1.4"])
       s.add_dependency(%q<rest-client>, ["~> 1.6"])
       s.add_dependency(%q<jeweler>, ["~> 1.6"])
-      s.add_dependency(%q<fakeweb>, ["~> 1.2.8"])
-      s.add_dependency(%q<rspec>, ["~> 1.3.0"])
+      s.add_dependency(%q<rspec>, ["~> 2.10"])
       s.add_dependency(%q<yard>, ["~> 0.5.8"])
-      s.add_dependency(%q<rack>, ["~> 1.2.1"])
+      s.add_dependency(%q<rack>, ["~> 1.4.1"])
       s.add_dependency(%q<activesupport>, ["~> 2.3.8"])
     end
   else
     s.add_dependency(%q<nokogiri>, ["~> 1.4"])
     s.add_dependency(%q<rest-client>, ["~> 1.6"])
     s.add_dependency(%q<jeweler>, ["~> 1.6"])
-    s.add_dependency(%q<fakeweb>, ["~> 1.2.8"])
-    s.add_dependency(%q<rspec>, ["~> 1.3.0"])
+    s.add_dependency(%q<rspec>, ["~> 2.10"])
     s.add_dependency(%q<yard>, ["~> 0.5.8"])
-    s.add_dependency(%q<rack>, ["~> 1.2.1"])
+    s.add_dependency(%q<rack>, ["~> 1.4.1"])
     s.add_dependency(%q<activesupport>, ["~> 2.3.8"])
   end
 end
