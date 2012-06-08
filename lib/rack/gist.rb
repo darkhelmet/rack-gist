@@ -77,7 +77,11 @@ module Rack
         'Vary' => 'Accept-Encoding'
       }
 
-      headers['Cache-Control'] = "public, must-revalidate, max-age=#{@options.fetch(:http_cache_time, DefaultCacheTime)}"
+      if gist == ''
+        headers['Cache-Control'] = 'no-cache'
+      else
+        headers['Cache-Control'] = "public, must-revalidate, max-age=#{@options.fetch(:http_cache_time, DefaultCacheTime)}"
+      end
 
       [200, headers, [gist]]
     end
@@ -89,6 +93,9 @@ module Rack
       else
         get_gist(gist_id, file)
       end
+    rescue RestClient::Exception
+      raise if @options.fetch(:raise, false)
+      ''
     end
 
     def get_gist(gist_id, file)
